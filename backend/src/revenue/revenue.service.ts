@@ -136,18 +136,18 @@ export class RevenueService {
 
     const hourlyData = await this.abandonmentRepo
       .createQueryBuilder('event')
-      .select('EXTRACT(HOUR FROM event.created_at)::integer', 'hour')
+      .select('EXTRACT(HOUR FROM "event"."createdAt")::integer', 'hour')
       .addSelect(
-        'COALESCE(SUM(CASE WHEN event.recovered = false THEN event.cart_value ELSE 0 END), 0)',
+        'COALESCE(SUM(CASE WHEN "event"."recovered" = false THEN "event"."cartValue" ELSE 0 END), 0)',
         'atRisk',
       )
       .addSelect(
-        'COALESCE(SUM(CASE WHEN event.recovered = true THEN event.cart_value ELSE 0 END), 0)',
+        'COALESCE(SUM(CASE WHEN "event"."recovered" = true THEN "event"."cartValue" ELSE 0 END), 0)',
         'recovered',
       )
-      .where('event.shop_id = :shopId', { shopId })
-      .andWhere('event.created_at >= :start', { start: startOfDay })
-      .andWhere('event.created_at <= :end', { end: endOfDay })
+      .where('"event"."shopId" = :shopId', { shopId })
+      .andWhere('"event"."createdAt" >= :start', { start: startOfDay })
+      .andWhere('"event"."createdAt" <= :end', { end: endOfDay })
       .groupBy('hour')
       .orderBy('hour', 'ASC')
       .getRawMany();
@@ -177,15 +177,15 @@ export class RevenueService {
   async getTopPerformingPopups(shopId: string, limit = 5): Promise<any[]> {
     const popupStats = await this.recoveryRepo
       .createQueryBuilder('recovery')
-      .select('recovery.popup_id', 'popupId')
-      .addSelect('popup.name', 'popupName')
-      .addSelect('COUNT(recovery.id)', 'recoveryCount')
-      .addSelect('SUM(recovery.recovery_value)', 'totalRecovered')
-      .leftJoin('popups', 'popup', 'popup.id = recovery.popup_id')
-      .where('recovery.shop_id = :shopId', { shopId })
-      .andWhere('recovery.popup_id IS NOT NULL')
-      .groupBy('recovery.popup_id')
-      .addGroupBy('popup.name')
+      .select('"recovery"."popupId"', 'popupId')
+      .addSelect('"popup"."name"', 'popupName')
+      .addSelect('COUNT("recovery"."id")', 'recoveryCount')
+      .addSelect('SUM("recovery"."recoveryValue")', 'totalRecovered')
+      .leftJoin('popups', 'popup', '"popup"."id" = "recovery"."popupId"')
+      .where('"recovery"."shopId" = :shopId', { shopId })
+      .andWhere('"recovery"."popupId" IS NOT NULL')
+      .groupBy('"recovery"."popupId"')
+      .addGroupBy('"popup"."name"')
       .orderBy('totalRecovered', 'DESC')
       .limit(limit)
       .getRawMany();
@@ -204,11 +204,11 @@ export class RevenueService {
   async getConversionBreakdown(shopId: string): Promise<any[]> {
     const breakdown = await this.recoveryRepo
       .createQueryBuilder('recovery')
-      .select('recovery.recovery_method', 'method')
-      .addSelect('COUNT(recovery.id)', 'count')
-      .addSelect('SUM(recovery.recovery_value)', 'totalValue')
-      .where('recovery.shop_id = :shopId', { shopId })
-      .groupBy('recovery.recovery_method')
+      .select('"recovery"."recoveryMethod"', 'method')
+      .addSelect('COUNT("recovery"."id")', 'count')
+      .addSelect('SUM("recovery"."recoveryValue")', 'totalValue')
+      .where('"recovery"."shopId" = :shopId', { shopId })
+      .groupBy('"recovery"."recoveryMethod"')
       .orderBy('totalValue', 'DESC')
       .getRawMany();
 

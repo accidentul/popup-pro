@@ -46,7 +46,7 @@ export default function RevenueDashboard() {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // const audioRef = useRef<HTMLAudioElement | null>(null); // Disabled for now
 
   // Load initial data
   useEffect(() => {
@@ -193,9 +193,10 @@ export default function RevenueDashboard() {
   };
 
   const playSuccessSound = () => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(e => console.log('Audio play failed:', e));
-    }
+    // Audio disabled for now - can be enabled later with proper sound file
+    // if (audioRef.current) {
+    //   audioRef.current.play().catch(e => console.log('Audio play failed:', e));
+    // }
   };
 
   const getDeviceIcon = (deviceType?: string) => {
@@ -294,8 +295,8 @@ export default function RevenueDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8">
-      {/* Success sound */}
-      <audio ref={audioRef} src="/success-sound.mp3" preload="auto" />
+      {/* Success sound - disabled for now */}
+      {/* <audio ref={audioRef} src="/success-sound.mp3" preload="auto" /> */}
 
       {/* Header */}
       <div className="mb-8">
