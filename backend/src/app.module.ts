@@ -9,6 +9,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { ABTestingModule } from './ab-testing/ab-testing.module';
 import { ShopifyModule } from './shopify/shopify.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
+import { RevenueModule } from './revenue/revenue.module';
 import { HealthController } from './health/health.controller';
 import { ScriptsController } from './scripts/scripts.controller';
 import { CacheModule } from './cache/cache.module';
@@ -44,6 +45,7 @@ import { RateLimitGuard } from './common/guards/rate-limit.guard';
     ABTestingModule,
     ShopifyModule,
     SubscriptionsModule,
+    RevenueModule,
     CacheModule,
   ],
   controllers: [HealthController, ScriptsController],

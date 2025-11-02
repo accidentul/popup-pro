@@ -141,6 +141,89 @@ export const analyticsApi = {
   getShopStats: (shopId: string) => api.get(`/analytics/shop/${shopId}`),
 };
 
+export interface RevenueStats {
+  atRisk: number;
+  recovered: number;
+  recoveryRate: number;
+  abandonedCount: number;
+  recoveredCount: number;
+}
+
+export interface ActivityFeedItem {
+  id: string;
+  type: 'abandonment' | 'recovery';
+  value: number;
+  items: any[];
+  location?: string;
+  deviceType?: string;
+  trafficSource?: string;
+  timestamp: string;
+  recoveredVia?: string;
+  popupName?: string;
+  timeAgo: string;
+}
+
+export interface HourlyDataPoint {
+  hour: number;
+  atRisk: number;
+  recovered: number;
+}
+
+export interface TopPopup {
+  popupId: string;
+  popupName: string;
+  recoveryCount: number;
+  totalRecovered: number;
+}
+
+export interface ConversionBreakdown {
+  method: string;
+  count: number;
+  percentage: number;
+  totalValue: number;
+}
+
+export const revenueApi = {
+  trackAbandonment: (data: {
+    shopId: string;
+    sessionId: string;
+    cartValue: number;
+    cartItems: any[];
+    deviceType?: string;
+    trafficSource?: string;
+    userLocation?: string;
+    userIp?: string;
+    userAgent?: string;
+    pageUrl?: string;
+  }) => api.post('/revenue/track-abandonment', data),
+
+  trackRecovery: (data: {
+    cartAbandonmentId: string;
+    shopId: string;
+    popupId?: string;
+    recoveryValue: number;
+    recoveryMethod: string;
+    offerUsed?: string;
+  }) => api.post('/revenue/track-recovery', data),
+
+  getStats: (shopId: string, period: 'today' | 'week' | 'month' = 'today') =>
+    api.get<RevenueStats>(`/revenue/stats?shopId=${shopId}&period=${period}`),
+
+  getActivityFeed: (shopId: string, limit = 20) =>
+    api.get<ActivityFeedItem[]>(`/revenue/activity-feed?shopId=${shopId}&limit=${limit}`),
+
+  getHourlyBreakdown: (shopId: string, date?: string) =>
+    api.get<HourlyDataPoint[]>(
+      `/revenue/hourly-breakdown?shopId=${shopId}${date ? `&date=${date}` : ''}`
+    ),
+
+  getTopPopups: (shopId: string, limit = 5) =>
+    api.get<TopPopup[]>(`/revenue/top-popups?shopId=${shopId}&limit=${limit}`),
+
+  getConversionBreakdown: (shopId: string) =>
+    api.get<ConversionBreakdown[]>(`/revenue/conversion-breakdown?shopId=${shopId}`),
+};
+
 export default api;
 
 
